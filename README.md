@@ -19,14 +19,14 @@ This message commands the "minou cat" tower LEDs.
   
 It is decoded by the software and a http request is issued to the local network of our home to the arduino server that controls the tower.
   
-'''json
+```json
 {
   "typ":"tour",
   "num_start":<LED start index>,
   "num_end":<LED end index>,
   "col":<LED color to apply>
 }
-'''
+```
   
 **Colors are:**
 - "r" : Red
