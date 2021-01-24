@@ -4,13 +4,13 @@ Domotic gateway for our home
 This software written in python listens into the rabbitmq "minetest_gw" queue and execute command messages for domotic.
 
 ## Chat message
-'''json
+```json
 {
   "typ":"chat",
   "dst":"<Destination player>",
   "msg":"<Message sent from the minetest game>"
 }
-'''
+```
   
 ## Cat tower command message
 This message commands the "minou cat" tower LEDs.
