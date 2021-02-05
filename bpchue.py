@@ -105,9 +105,8 @@ def test_bpc_hue():
     for l in lst:
         print(l);
 
-    a=hue.getLight(7);
+    a=hue.getLight(1);
     a.on();
     a.off();
-
 
 

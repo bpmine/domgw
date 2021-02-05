@@ -1,7 +1,8 @@
 import pika
 import requests
 import json
-from bpchue import Hue;
+from bpchue import Hue
+from libadge import BadgeReader
 
 
 class HueGW:
@@ -59,7 +60,16 @@ class RabbitGW:
         self.login=login
         self.passe=passe
 
-        self.connect()        
+        self.connect()
+
+    def sendChat(self,msg):
+        dta={
+            "typ":"chat",
+            "dst":"all",
+            "msg":msg
+             }
+        
+        self.send(json.dumps(dta))
 
     def send(self,msg):
         self.ch.basic_publish(exchange="minetest",
@@ -132,6 +142,24 @@ LOGIN=data['login']
 PASS=data['pass']
 
 r=RabbitGW(IP,LOGIN,PASS)
+
+def eventCard(rdr,card):
+    print(card)
+    rdr.setGreenLed(True)
+    r.sendChat("Badge Présenté: %s" % (card))
+
+    dta={
+            "typ":"badge",
+            "id":card
+    }        
+    r.send(json.dumps(dta))
+
+    
+
+badgeReader=BadgeReader("COM3")
+badgeReader.addListener(eventCard)
+badgeReader.start()
+
 r.start(cb)
 
         
