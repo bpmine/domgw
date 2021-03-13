@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import pika
 import requests
 import json
@@ -156,9 +157,9 @@ def eventCard(rdr,card):
 
     
 
-badgeReader=BadgeReader("COM3")
-badgeReader.addListener(eventCard)
-badgeReader.start()
+#badgeReader=BadgeReader("COM3")
+#badgeReader.addListener(eventCard)
+#badgeReader.start()
 
 r.start(cb)
 
