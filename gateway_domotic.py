@@ -34,7 +34,6 @@ class HueGW:
             print("Lampe %s non trouve" % (name) )
                 
 
-
 class RabbitGW:
     ip=None
     login=None
@@ -95,6 +94,7 @@ class RabbitGW:
         self.ch.start_consuming()
 
 IP_TOUR='192.168.1.42'
+IP_CABANE='192.168.1.44'
 
 hue=HueGW();
 
@@ -121,6 +121,26 @@ def cb(key,msg):
                 print("  - Led tour %s->%s: Couleur %s" % (num_start,num_end,col))
 
                 r = requests.post('http://%s/leds/set?start=%s&col=%s&end=%s' % (IP_TOUR,num_start,col,num_end))
+                print(r.text);
+
+        elif typ=='cabh':
+            if 'num_start' in msg and 'num_end' in msg and 'col' in msg:
+                num_start=int(msg['num_start'])
+                num_end=int(msg['num_end'])
+                col=msg['col']
+                print("  - Led cabane haut %s->%s: Couleur %s" % (num_start,num_end,col))
+
+                r = requests.post('http://%s/leds/haut/set?start=%s&col=%s&end=%s' % (IP_CABANE,num_start,col,num_end))
+                print(r.text);
+
+        elif typ=='cabb':
+            if 'num_start' in msg and 'num_end' in msg and 'col' in msg:
+                num_start=int(msg['num_start'])
+                num_end=int(msg['num_end'])
+                col=msg['col']
+                print("  - Led cabane bas %s->%s: Couleur %s" % (num_start,num_end,col))
+
+                r = requests.post('http://%s/leds/bas/set?start=%s&col=%s&end=%s' % (IP_CABANE,num_start,col,num_end))
                 print(r.text);
 
         elif typ=='hue':
@@ -156,9 +176,9 @@ def eventCard(rdr,card):
 
     
 
-badgeReader=BadgeReader("COM3")
-badgeReader.addListener(eventCard)
-badgeReader.start()
+#badgeReader=BadgeReader("COM7")
+#badgeReader.addListener(eventCard)
+#badgeReader.start()
 
 r.start(cb)
 
