@@ -101,58 +101,106 @@ hue=HueGW();
 def cb(key,msg):
     print("Message recu: %s: %s" % (key,msg))
 
-    msg=json.loads(msg)
+    try:
 
-    if 'typ' in msg:
-        typ=msg['typ']
-        if typ=='chat':
-            if 'msg' in msg:
-                print("Chat> %s" % (msg['msg']))
-                if msg['msg']=='hueon':
-                    hue.set("bureau Paul",True)
-                if msg['msg']=='hueoff':
-                    hue.set("bureau Paul",False)
+        msg=json.loads(msg)
+
+        if 'typ' in msg:
+            typ=msg['typ']
+            if typ=='chat':
+                if 'msg' in msg:
+                    print("Chat> %s" % (msg['msg']))
+                    if msg['msg']=='hueon':
+                        hue.set("bureau Paul",True)
+                    if msg['msg']=='hueoff':
+                        hue.set("bureau Paul",False)
+                        
+            elif typ=='tour':
+                if 'num_start' in msg and 'num_end' in msg and 'col' in msg:
+                    num_start=int(msg['num_start'])
+                    num_end=int(msg['num_end'])
+                    col=msg['col']
+                    print("  - Led tour %s->%s: Couleur %s" % (num_start,num_end,col))
+
+                    r = requests.post('http://%s/leds/set?start=%s&col=%s&end=%s' % (IP_TOUR,num_start,col,num_end))
+                    print(r.text);
+                elif 'prog' in msg:
+                    prog=msg['prog']
+                    print("  - Programme animation tour %s" % (prog))
+                    r = requests.post('http://%s/leds/anim?prog=%s' % (IP_TOUR,prog))
+                    print(r.text);
+                elif 'anim' in msg:
+                    en=msg['anim']
+                    print("  - Activation animation tour %s" % (en))
+                    if en==True:
+                        val=1
+                    else:
+                        val=0
+                    r = requests.post('http://%s/leds/anim?enable=%s' % (IP_TOUR,val))
+                    print(r.text);
                     
-        elif typ=='tour':
-            if 'num_start' in msg and 'num_end' in msg and 'col' in msg:
-                num_start=int(msg['num_start'])
-                num_end=int(msg['num_end'])
-                col=msg['col']
-                print("  - Led tour %s->%s: Couleur %s" % (num_start,num_end,col))
 
-                r = requests.post('http://%s/leds/set?start=%s&col=%s&end=%s' % (IP_TOUR,num_start,col,num_end))
-                print(r.text);
+            elif typ=='cabh':
+                if 'num_start' in msg and 'num_end' in msg and 'col' in msg:
+                    num_start=int(msg['num_start'])
+                    num_end=int(msg['num_end'])
+                    col=msg['col']
+                    print("  - Led cabane haut %s->%s: Couleur %s" % (num_start,num_end,col))
 
-        elif typ=='cabh':
-            if 'num_start' in msg and 'num_end' in msg and 'col' in msg:
-                num_start=int(msg['num_start'])
-                num_end=int(msg['num_end'])
-                col=msg['col']
-                print("  - Led cabane haut %s->%s: Couleur %s" % (num_start,num_end,col))
+                    r = requests.post('http://%s/leds/haut/set?start=%s&col=%s&end=%s' % (IP_CABANE,num_start,col,num_end))
+                    print(r.text);
+                elif 'prog' in msg:
+                    prog=msg['prog']
+                    print("  - Programme animation cabane haut %s" % (prog))
+                    r = requests.post('http://%s/leds/haut/anim?prog=%s' % (IP_CABANE,prog))
+                    print(r.text);
+                elif 'anim' in msg:
+                    en=msg['anim']
+                    print("  - Activation animation cabane haut %s" % (en))
+                    if en==True:
+                        val=1
+                    else:
+                        val=0
+                    r = requests.post('http://%s/leds/haut/anim?enable=%s' % (IP_CABANE,val))
+                    print(r.text);
 
-                r = requests.post('http://%s/leds/haut/set?start=%s&col=%s&end=%s' % (IP_CABANE,num_start,col,num_end))
-                print(r.text);
+            elif typ=='cabb':
+                if 'num_start' in msg and 'num_end' in msg and 'col' in msg:
+                    num_start=int(msg['num_start'])
+                    num_end=int(msg['num_end'])
+                    col=msg['col']
+                    print("  - Led cabane bas %s->%s: Couleur %s" % (num_start,num_end,col))
 
-        elif typ=='cabb':
-            if 'num_start' in msg and 'num_end' in msg and 'col' in msg:
-                num_start=int(msg['num_start'])
-                num_end=int(msg['num_end'])
-                col=msg['col']
-                print("  - Led cabane bas %s->%s: Couleur %s" % (num_start,num_end,col))
+                    r = requests.post('http://%s/leds/bas/set?start=%s&col=%s&end=%s' % (IP_CABANE,num_start,col,num_end))
+                    print(r.text);
+                elif 'prog' in msg:
+                    prog=msg['prog']
+                    print("  - Programme animation cabane bas %s" % (prog))
+                    r = requests.post('http://%s/leds/bas/anim?prog=%s' % (IP_CABANE,prog))
+                    print(r.text);
+                elif 'anim' in msg:
+                    en=msg['anim']
+                    print("  - Activation animation cabane bas %s" % (en))
+                    if en==True:
+                        val=1
+                    else:
+                        val=0
+                    r = requests.post('http://%s/leds/bas/anim?enable=%s' % (IP_CABANE,val))
+                    print(r.text);                    
 
-                r = requests.post('http://%s/leds/bas/set?start=%s&col=%s&end=%s' % (IP_CABANE,num_start,col,num_end))
-                print(r.text);
+            elif typ=='hue':
+                if 'name' in msg and 'cmd' in msg:
+                    name=msg['name']
+                    cmd=msg['cmd']
 
-        elif typ=='hue':
-            if 'name' in msg and 'cmd' in msg:
-                name=msg['name']
-                cmd=msg['cmd']
+                    print("  - Hue %s: %s" % (name,cmd))
+                    if cmd=='on':
+                        hue.set(name,True)
+                    else:
+                        hue.set(name,False)
 
-                print("  - Hue %s: %s" % (name,cmd))
-                if cmd=='on':
-                    hue.set(name,True)
-                else:
-                    hue.set(name,False)
+    except Exception as ex:
+        print("ERREUR: %s" % (ex))
 
 with open('credentials.txt','r') as json_file:
     data = json.load(json_file)
